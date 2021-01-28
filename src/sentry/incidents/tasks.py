@@ -126,7 +126,9 @@ def handle_snuba_query_update(subscription_update, subscription):
     default_retry_delay=60,
     max_retries=5,
 )
-def handle_trigger_action(action_id, trigger_id, incident_id, project_id, method, metric_value=None, **kwargs):
+def handle_trigger_action(
+    action_id, trigger_id, incident_id, project_id, method, metric_value=None, **kwargs
+):
     try:
         action = AlertRuleTriggerAction.objects.select_related(
             "alert_rule_trigger", "alert_rule_trigger__alert_rule"
