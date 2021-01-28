@@ -35,12 +35,14 @@ class ActionHandler(object):
     def resolve(self, metric_value):
         pass
 
+
 class DefaultActionHandler(ActionHandler):
     def fire(self, metric_value):
         self.send_alert(metric_value)
 
     def resolve(self, metric_value):
         self.send_alert(metric_value)
+
 
 @AlertRuleTriggerAction.register_type(
     "email",
