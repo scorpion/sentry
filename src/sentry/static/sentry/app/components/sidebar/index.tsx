@@ -47,7 +47,7 @@ import {getSidebarPanelContainer} from './sidebarPanel';
 import {SidebarOrientation, SidebarPanelKey} from './types';
 
 type Props = {
-  location: Location;
+  location?: Location;
   organization: Organization;
   collapsed: boolean;
   children?: never;
@@ -85,22 +85,6 @@ class Sidebar extends React.Component<Props, State> {
     this.doCollapse(this.props.collapsed);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    const {collapsed, location} = this.props;
-    const nextLocation = nextProps.location;
-
-    // Close active panel if we navigated anywhere
-    if (nextLocation && location && location.pathname !== nextLocation.pathname) {
-      this.hidePanel();
-    }
-
-    if (collapsed === nextProps.collapsed) {
-      return;
-    }
-
-    this.doCollapse(nextProps.collapsed);
-  }
-
   // Sidebar doesn't use children, so don't use it to compare
   // Also ignore location, will re-render when routes change (instead of query params)
   //
@@ -121,6 +105,20 @@ class Sidebar extends React.Component<Props, State> {
       !isEqual(currentPropsToCompare, nextPropsToCompare) ||
       !isEqual(this.state, nextState)
     );
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const {collapsed, location} = this.props;
+
+    // Close active panel if we navigated anywhere
+    if (location?.pathname !== prevProps.location?.pathname) {
+      this.hidePanel();
+    }
+
+    // Collapse
+    if (collapsed !== prevProps.collapsed) {
+      this.doCollapse(collapsed);
+    }
   }
 
   componentWillUnmount() {
